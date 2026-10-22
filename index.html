@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>SegCam</title>
+<script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#0b1020;--card:#151c33;--tx:#e8ecf8;--mu:#8b95b5;--ac:#4f8cff;--ok:#2ecc71;--bad:#ff4d5e}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--tx);font:16px system-ui,sans-serif;padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom);min-height:100vh}
+.s{display:none;max-width:520px;margin:0 auto;padding:14px 0}.s.on{display:block}
+h1{font-size:26px;margin:18px 0 6px}h2{font-size:15px;color:var(--mu);margin:16px 0 8px;font-weight:600}
+p{color:var(--mu);font-size:14px}
+button{background:var(--card);color:var(--tx);border:1px solid #2a3560;border-radius:12px;padding:13px;font-size:15px;width:100%}
+button.p{background:var(--ac);border:0;font-weight:600}button.d{background:var(--bad);border:0}button.on2{border-color:var(--ok);color:var(--ok)}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g1{display:grid;gap:10px;margin-top:10px}
+video{width:100%;border-radius:14px;background:#000;max-height:46vh;object-fit:cover}
+.c{background:var(--card);border-radius:14px;padding:12px;margin-top:10px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--bad);margin-right:6px}.dot.ok{background:var(--ok)}
+#qr{background:#fff;padding:10px;border-radius:10px;display:inline-block}
+.h{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #222b4d}.h img{width:64px;height:48px;object-fit:cover;border-radius:8px}
+.h.u b{color:var(--bad)}small{color:var(--mu)}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #2a3560;background:#0e1428;color:var(--tx);font-size:16px}
+</style>
+</head>
+<body>
+
+<section id="home" class="s on">
+  <h1>🛡️ SegCam</h1>
+  <p>Segurança com reconhecimento facial. Escolha a função deste aparelho:</p>
+  <div class="g1">
+    <button class="p" onclick="initCam()">📷 Este aparelho é a CÂMERA</button>
+    <button onclick="initMon()">📺 Este aparelho é o MONITOR</button>
+  </div>
+</section>
+
+<section id="cam" class="s">
+  <h2><span class="dot" id="cdot"></span><span id="cst">Conectando…</span></h2>
+  <video id="cv" autoplay playsinline muted></video>
+  <div class="c" style="text-align:center">
+    <p>Peça ao monitor para escanear:</p><br>
+    <div id="qr"></div><br><br>
+    <b id="code" style="letter-spacing:2px"></b>
+  </div>
+  <div class="g1">
+    <button id="aiB" class="p" onclick="toggleAI()">🧠 Ativar monitoramento por IA</button>
+    <div class="g"><button onclick="addFace()">➕ Cadastrar rosto</button><button onclick="cfg()">⚙️ Chave / intervalo</button></div>
+  </div>
+  <h2>Rostos cadastrados</h2><div id="faces" class="c"></div>
+  <p id="aiLog" style="margin-top:10px"></p>
+  <button style="margin-top:14px" onclick="location.reload()">← Voltar</button>
+</section>
+
+<section id="mon" class="s">
+  <h2><span class="dot" id="mdot"></span><span id="mst">Não pareado</span></h2>
+  <div id="scan">
+    <video id="sv" autoplay playsinline muted></video>
+    <p style="margin:8px 0">Aponte para o QR Code da câmera ou digite o código:</p>
+    <div class="g"><input id="man" placeholder="código" autocapitalize="characters"><button class="p" onclick="pair(man.value.trim().toUpperCase())">Parear</button></div>
+  </div>
+  <div id="ctl" style="display:none">
+    <div class="g">
+      <button id="bF" onclick="send({a:'flash',v:!S.torch})">🔦 Flash</button>
+      <button onclick="send({a:'photo'})">📸 Tirar foto</button>
+      <button onclick="send({a:'flip'})">🔄 Frontal/Traseira</button>
+      <button id="bA" onclick="send({a:'alarm',v:!S.alarm})">🔔 Alarme</button>
+    </div>
+    <div id="ph" class="c" style="display:none"><small>Última foto remota</small><img id="phi" style="width:100%;border-radius:10px;margin-top:6px"></div>
+    <h2>Histórico de alertas</h2><div id="hist" class="c"></div>
+    <button class="d" style="margin-top:10px" onclick="localStorage.removeItem('hist');renderHist()">Limpar histórico</button>
+  </div>
+  <button style="margin-top:14px" onclick="location.reload()">← Voltar</button>
+</section>
+
+<canvas id="cvs" style="display:none"></canvas>
+<script>
+const $=id=>document.getElementById(id), BROKER='wss://broker.hivemq.com:8884/mqtt', MODEL='gemini-2.5-flash';
+const ls=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}}, sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){alert('Armazenamento cheio')}};
+const show=id=>document.querySelectorAll('.s').forEach(s=>s.classList.toggle('on',s.id==id));
+const rid=n=>{const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let r='';const b=crypto.getRandomValues(new Uint8Array(n));b.forEach(x=>r+=a[x%a.length]);return r};
+let S={}, client, base, stream, facing='environment', alarmT, actx, aiOn=false, aiT, lastAlert=0;
+
+function snap(w=480,q=.6){const v=$('cv'),c=$('cvs'),r=v.videoHeight/v.videoWidth||.75;c.width=w;c.height=w*r;c.getContext('2d').drawImage(v,0,0,c.width,c.height);return c.toDataURL('image/jpeg',q)}
+
+/* ================= CÂMERA ================= */
+async function initCam(){
+  show('cam'); actx=new (window.AudioContext||window.webkitAudioContext)();
+  const code=ls('code',null)||rid(12); sv('code',code); base='segcam/'+code;
+  $('code').textContent=code; $('qr').innerHTML=''; new QRCode($('qr'),{text:'segcam:'+code,width:170,height:170});
+  try{await startStream()}catch(e){$('cst').textContent='Sem acesso à câmera (precisa de HTTPS)';return}
+  client=mqtt.connect(BROKER,{will:{topic:base+'/st',payload:JSON.stringify({online:false}),retain:true}});
+  client.on('connect',()=>{$('cdot').classList.add('ok');$('cst').textContent='Online — aguardando monitor';client.subscribe(base+'/cmd');pubSt()});
+  client.on('close',()=>{$('cdot').classList.remove('ok');$('cst').textContent='Reconectando…'});
+  client.on('message',(t,m)=>{try{onCmd(JSON.parse(m))}catch{}});
+  renderFaces();
+}
+async function startStream(){
+  stream&&stream.getTracks().forEach(t=>t.stop());
+  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280}},audio:false});
+  $('cv').srcObject=stream; S.torch=false;
+}
+const pubSt=()=>client&&client.publish(base+'/st',JSON.stringify({online:true,torch:!!S.torch,alarm:!!S.alarm,facing}),{retain:true});
+async function onCmd(c){
+  if(c.a=='flash'){
+    try{await stream.getVideoTracks()[0].applyConstraints({advanced:[{torch:!!c.v}]});S.torch=!!c.v}
+    catch{client.publish(base+'/evt',JSON.stringify({msg:'Flash não suportado nesta câmera/navegador'}))}
+  }
+  if(c.a=='photo'){client.publish(base+'/ph',JSON.stringify({t:Date.now(),img:snap(640,.6)}))}
+  if(c.a=='flip'){facing=facing=='user'?'environment':'user';await startStream()}
+  if(c.a=='alarm'){setAlarm(!!c.v)}
+  pubSt();
+}
+function setAlarm(on){
+  S.alarm=on; clearInterval(alarmT); if(!on)return; actx.resume();
+  let f=false; alarmT=setInterval(()=>{const o=actx.createOscillator(),g=actx.createGain();o.type='square';o.frequency.value=f?880:660;f=!f;g.gain.value=.4;o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+.28)},300);
+}
+/* rostos */
+function renderFaces(){
+  const F=ls('faces',[]);
+  $('faces').innerHTML=F.length?F.map((f,i)=>`<div class="h"><img src="${f.img}"><span style="flex:1">${f.name}</span><button style="width:auto;padding:6px 10px" onclick="delFace(${i})">✕</button></div>`).join(''):'<small>Nenhum rosto cadastrado — todos serão "desconhecidos".</small>';
+}
+function addFace(){
+  const F=ls('faces',[]); if(F.length>=6)return alert('Máximo de 6 rostos');
+  const name=prompt('Nome da pessoa (ela deve estar visível na câmera agora):'); if(!name)return;
+  F.push({name,img:snap(360,.7)}); sv('faces',F); renderFaces();
+}
+function delFace(i){const F=ls('faces',[]);F.splice(i,1);sv('faces',F);renderFaces()}
+function cfg(){
+  const k=prompt('Chave da API Gemini (fica só neste aparelho):',ls('key',''));if(k!==null)sv('key',k.trim());
+  const s=prompt('Intervalo entre análises (segundos, mín. 5):',ls('iv',10));if(s)sv('iv',Math.max(5,+s||10));
+}
+/* IA */
+function toggleAI(){
+  if(!ls('key','')){cfg();if(!ls('key',''))return}
+  aiOn=!aiOn; $('aiB').textContent=aiOn?'⏹ Parar monitoramento por IA':'🧠 Ativar monitoramento por IA'; $('aiB').classList.toggle('d',aiOn);
+  clearInterval(aiT); if(aiOn){analyze();aiT=setInterval(analyze,ls('iv',10)*1000)}
+}
+async function analyze(){
+  try{
+    const F=ls('faces',[]), img=snap(512,.6), parts=[{text:'Você é um sistema de segurança. Compare os rostos na IMAGEM ATUAL com as pessoas conhecidas abaixo. Responda somente JSON: {"faces":[{"nome":"<nome conhecido ou desconhecido>"}]}. Use lista vazia se não houver rostos visíveis.'}];
+    F.forEach(f=>{parts.push({text:'Pessoa conhecida: '+f.name},{inline_data:{mime_type:'image/jpeg',data:f.img.split(',')[1]}})});
+    parts.push({text:'IMAGEM ATUAL:'},{inline_data:{mime_type:'image/jpeg',data:img.split(',')[1]}});
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${ls('key','')}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}],generationConfig:{responseMimeType:'application/json'}})});
+    const j=await r.json(), txt=j.candidates?.[0]?.content?.parts?.[0]?.text; if(!txt)throw new Error(j.error?.message||'sem resposta');
+    const names=(JSON.parse(txt).faces||[]).map(x=>String(x.nome||'desconhecido'));
+    const unknown=names.some(n=>/desconhecid/i.test(n));
+    $('aiLog').textContent=new Date().toLocaleTimeString()+' — '+(names.length?names.join(', '):'nenhum rosto');
+    if(names.length&&Date.now()-lastAlert>20000){lastAlert=Date.now();client.publish(base+'/al',JSON.stringify({t:Date.now(),names,unknown,img:snap(320,.5)}))}
+  }catch(e){$('aiLog').textContent='Erro IA: '+e.message}
+}
+
+/* ================= MONITOR ================= */
+let scanning=false;
+async function initMon(){
+  show('mon'); scanning=true;
+  try{
+    const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}); stream=s; $('sv').srcObject=s;
+    const c=$('cvs'),x=c.getContext('2d',{willReadFrequently:true});
+    (function loop(){
+      if(!scanning)return;
+      const v=$('sv'); if(v.videoWidth){c.width=v.videoWidth;c.height=v.videoHeight;x.drawImage(v,0,0);
+        const q=jsQR(x.getImageData(0,0,c.width,c.height).data,c.width,c.height);
+        if(q&&q.data.startsWith('segcam:')){pair(q.data.slice(7));return}}
+      requestAnimationFrame(loop)})();
+  }catch{$('mst').textContent='Sem câmera — digite o código'}
+  renderHist();
+}
+function pair(code){
+  if(!code)return; scanning=false; stream&&stream.getTracks().forEach(t=>t.stop());
+  base='segcam/'+code; $('scan').style.display='none'; $('ctl').style.display='block'; $('mst').textContent='Conectando…';
+  client=mqtt.connect(BROKER);
+  client.on('connect',()=>{client.subscribe([base+'/st',base+'/ph',base+'/al',base+'/evt'])});
+  client.on('message',(t,m)=>{
+    let d;try{d=JSON.parse(m)}catch{return}
+    const k=t.split('/').pop();
+    if(k=='st'){S=d;$('mdot').classList.toggle('ok',!!d.online);$('mst').textContent=d.online?'Câmera online':'Câmera offline';
+      $('bF').classList.toggle('on2',!!d.torch);$('bA').classList.toggle('on2',!!d.alarm)}
+    if(k=='ph'){$('ph').style.display='block';$('phi').src=d.img}
+    if(k=='evt')alert(d.msg);
+    if(k=='al'){const H=ls('hist',[]);H.unshift(d);sv('hist',H.slice(0,40));renderHist();navigator.vibrate&&navigator.vibrate(d.unknown?[300,100,300]:100)}
+  });
+}
+function send(c){client&&client.publish(base+'/cmd',JSON.stringify(c))}
+function renderHist(){
+  const H=ls('hist',[]);
+  $('hist').innerHTML=H.length?H.map(a=>`<div class="h ${a.unknown?'u':''}"><img src="${a.img}"><div><b>${a.unknown?'⚠️ Desconhecido':'✅ Conhecido'}</b><br><small>${a.names.join(', ')} · ${new Date(a.t).toLocaleString()}</small></div></div>`).join(''):'<small>Sem alertas.</small>';
+}
+</script>
+</body>
+</html>
