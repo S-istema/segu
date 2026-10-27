@@ -13,7 +13,6 @@ body{background:radial-gradient(1100px 560px at 15% -10%,#18235a 0,transparent 6
 .s{display:none;min-height:100vh}.s.on{display:block}
 button{font:inherit;color:var(--tx);cursor:pointer}
 svg{display:block}
-/* home */
 .hero{max-width:460px;margin:0 auto;padding:max(48px,env(safe-area-inset-top)) 22px 30px;text-align:center}
 .logo{width:76px;height:76px;border-radius:22px;background:var(--g);display:grid;place-items:center;margin:0 auto 18px;box-shadow:0 12px 40px #5b8cff55}
 .hero h1{font-size:32px;letter-spacing:-.5px}.hero p{color:var(--mu);margin:6px 0 26px}
@@ -22,7 +21,6 @@ input:focus{border-color:var(--ac)}
 .role{display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:18px;margin-top:12px;border-radius:18px;border:1px solid var(--bd);background:linear-gradient(160deg,var(--p2),var(--p))}
 .role:active{transform:scale(.98)}.role i{width:48px;height:48px;border-radius:14px;background:var(--g);display:grid;place-items:center;flex:none}
 .role b{display:block;font-size:17px}.role span{color:var(--mu);font-size:13px}
-/* topbar & nav */
 .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:max(12px,env(safe-area-inset-top)) 16px 12px;background:#070b16cc;backdrop-filter:blur(14px);border-bottom:1px solid #1b2548}
 .top .lg{width:34px;height:34px;border-radius:10px;background:var(--g);display:grid;place-items:center}
 .top h2{font-size:18px;flex:1}.top small{display:block;color:var(--mu);font-size:12px;font-weight:400}
@@ -32,7 +30,6 @@ input:focus{border-color:var(--ac)}
 .nav button{flex:1;background:0;border:0;padding:10px 0 8px;color:var(--mu);font-size:11px;display:grid;justify-items:center;gap:3px;position:relative}
 .nav button.on{color:var(--ac)}.bdg{position:absolute;top:4px;left:56%;background:var(--bad);color:#fff;border-radius:9px;min-width:18px;padding:0 5px;font-size:11px;display:none}
 .pg{display:none;padding:16px 16px 100px;max-width:1400px;margin:0 auto}.pg.on{display:block}
-/* grid */
 #grid.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));align-items:start}
 #grid.focus{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));align-items:start}
 #grid.focus .tile.big{grid-column:1/-1;order:-1}
@@ -48,13 +45,13 @@ input:focus{border-color:var(--ac)}
 .tp{position:absolute;top:0;left:0;right:0;display:flex;gap:8px;align-items:center;padding:10px 12px;background:linear-gradient(#000b,transparent);font-size:13px}
 .tp b{flex:1;text-shadow:0 1px 3px #000}.lv{display:none;background:var(--bad);font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.5px;animation:bl 2s infinite}
 .tile.live .lv{display:block}
+.cs{font-size:10px;color:var(--mu);background:#0008;border-radius:6px;padding:2px 7px}.tile.live .cs{display:none}
 .bar{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:center;gap:10px;padding:26px 10px 10px;background:linear-gradient(transparent,#000c)}
 .bar button{width:42px;height:42px;border-radius:50%;border:1px solid #ffffff30;background:#ffffff1c;backdrop-filter:blur(8px);display:grid;place-items:center}
 .bar button.act{background:var(--ac);border-color:var(--ac)}.bar button.act.al{background:var(--bad);border-color:var(--bad)}
 .off{display:none;position:absolute;inset:0;background:#070b16f0;place-items:center;color:var(--mu);font-weight:600}
 .tile.offline .off{display:grid}
 .empty{text-align:center;color:var(--mu);padding:70px 20px}.empty b{display:block;color:var(--tx);font-size:18px;margin:12px 0 4px}
-/* lists */
 .card{background:linear-gradient(160deg,var(--p2),var(--p));border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
 .row{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #212b52}.row:last-child{border:0}
 .row img{width:72px;height:54px;object-fit:cover;border-radius:10px}.row .t{flex:1}.row small{color:var(--mu)}
@@ -67,7 +64,6 @@ select{padding:14px;border-radius:14px;border:1px solid var(--bd);background:var
 .btn{padding:14px;border-radius:14px;border:0;background:var(--g);font-weight:600}
 h3{font-size:14px;color:var(--mu);margin:4px 0 10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px}
 .sw{display:flex;justify-content:space-between;align-items:center;gap:12px}.sw input{width:48px;height:26px;accent-color:var(--bad)}
-/* camera */
 #cam{position:relative;background:#000;overflow:hidden}
 #cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hud{position:absolute;left:0;right:0;padding:16px;display:flex;gap:10px;align-items:center}
@@ -96,6 +92,7 @@ h3{font-size:14px;color:var(--mu);margin:4px 0 10px;font-weight:600;text-transfo
   <video id="cv" autoplay playsinline muted></video>
   <div class="hud t"><span class="dot" id="cdot"></span><b id="cnm" style="flex:1"></b><span class="chip" id="cai">…</span></div>
   <div class="hud b"><span class="chip" id="cdet" style="align-self:center">Sem rostos</span>
+    <span class="chip" id="clink" style="align-self:center">Painel: ninguém conectado</span>
     <button class="role" style="margin:0;justify-content:center" onclick="location.reload()">Encerrar câmera</button></div>
 </section>
 
@@ -116,13 +113,20 @@ h3{font-size:14px;color:var(--mu);margin:4px 0 10px;font-weight:600;text-transfo
     <button class="btn" style="width:100%;margin-top:10px" onclick="enroll()">Cadastrar pela câmera</button></div>
     <h3>Pessoas conhecidas</h3><div class="card"><div class="fgrid" id="faces"></div></div></div>
 
-  <div class="nav"><button class="on" onclick="tab('cams',this)" id="n0"></button><button onclick="tab('al',this)" id="n1"><span class="bdg" id="bdg"></span></button><button onclick="tab('fc',this)" id="n2"></button></div>
+  <div class="nav"><button class="on" onclick="tab('cams',this)" id="n0"></button><button onclick="tab('al',this)" id="n1"></button><button onclick="tab('fc',this)" id="n2"></button></div>
 </section>
 
 <script>
 /* ===== CONFIG ===== (troque SYS por qualquer texto aleatório seu: é o "canal privado" do sistema) */
 const SYS='sc-9f3k2m7q4x8v1b6n5t0z', P='segcam-'+SYS, BROKER='wss://broker.hivemq.com:8884/mqtt';
-const RTC={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}]};
+
+/* TURN: necessário quando câmera e monitor estão em redes diferentes (Wi-Fi x 4G).
+   Crie uma conta grátis em metered.ca (Open Relay) e preencha abaixo. */
+const TURN={host:'',user:'',pass:''};   // ex.: host:'seuapp.metered.live'
+const ICE=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}];
+if(TURN.host)ICE.push({urls:[`turn:${TURN.host}:80`,`turn:${TURN.host}:443?transport=tcp`,`turns:${TURN.host}:443?transport=tcp`],username:TURN.user,credential:TURN.pass});
+else ICE.push({urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}); // fallback público (pode não funcionar)
+const RTC={iceServers:ICE};
 const FAPI='https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/';
 
 const $=id=>document.getElementById(id), esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
@@ -139,25 +143,26 @@ $('n0').innerHTML=ic('cam')+'Câmeras';$('n1').innerHTML=ic('bell')+'Alertas<spa
 const show=id=>document.querySelectorAll('.s').forEach(s=>s.classList.toggle('on',s.id==id));
 const toast=m=>{const t=document.createElement('div');t.className='toast';t.textContent=m;$('toasts').append(t);setTimeout(()=>t.remove(),3800)};
 const loadJS=u=>new Promise((r,j)=>{const s=document.createElement('script');s.src=u;s.onload=r;s.onerror=j;document.head.append(s)});
-const ice=pc=>new Promise(r=>{if(pc.iceGatheringState=='complete')return r();const f=()=>{if(pc.iceGatheringState=='complete'){pc.removeEventListener('icegatheringstatechange',f);r()}};pc.addEventListener('icegatheringstatechange',f);setTimeout(r,3000)});
-let cl; const pub=(t,o,r)=>cl.publish(t,JSON.stringify(o),{retain:!!r});
+const ice=pc=>new Promise(r=>{if(pc.iceGatheringState=='complete')return r();const f=()=>{if(pc.iceGatheringState=='complete'){pc.removeEventListener('icegatheringstatechange',f);r()}};pc.addEventListener('icegatheringstatechange',f);setTimeout(r,3500)});
+let cl; const pub=(t,o,r)=>cl&&cl.connected&&cl.publish(t,JSON.stringify(o),{retain:!!r});
 const keepAwake=()=>navigator.wakeLock&&navigator.wakeLock.request('screen').catch(()=>{});
 
 /* ================= CÂMERA ================= */
-let stream,facing='environment',camId,camName,peers={},DB=[],actx,alarmT,pend=null,lastUnk=0,seen={},S={online:true,torch:false,alarm:false,auto:false,ai:false},boot=Date.now();
+let stream,facing='environment',camId,camName,peers={},DB=[],actx,alarmT,pend=null,lastUnk=0,seen={},S={online:true,torch:false,alarm:false,auto:false,ai:false},boot=Date.now(),lastDet=0,lastPubDet=0;
 async function initCam(){
   camName=$('cname').value.trim()||'Câmera'; sv('cname',camName); camId=ls('camId',null)||rid(); sv('camId',camId);
   actx=new (window.AudioContext||window.webkitAudioContext)(); show('cam'); $('cnm').textContent=camName;
   try{await startStream()}catch{$('cai').textContent='Sem acesso à câmera (use HTTPS)';return}
   keepAwake();
-  cl=mqtt.connect(BROKER,{will:{topic:`${P}/cam/${camId}/st`,payload:JSON.stringify({online:false}),retain:true}});
+  cl=mqtt.connect(BROKER,{reconnectPeriod:3000,will:{topic:`${P}/cam/${camId}/st`,payload:JSON.stringify({online:false}),retain:true}});
   cl.on('connect',()=>{$('cdot').classList.add('ok');cl.subscribe([`${P}/cam/${camId}/cmd`,`${P}/cam/${camId}/sig`,`${P}/faces`]);pubSt()});
   cl.on('close',()=>$('cdot').classList.remove('ok'));
+  cl.on('error',e=>$('cai').textContent='Erro MQTT: '+(e.message||e));
   cl.on('message',async(t,m)=>{let d;try{d=JSON.parse(m)}catch{return}const k=t.split('/').pop();
     if(k=='faces')DB=d; if(k=='cmd')onCmd(d); if(k=='sig'&&peers[d.mon])peers[d.mon].setRemoteDescription(d.sdp).catch(()=>{})});
   loadAI();
 }
-const pubSt=()=>cl&&cl.connected&&pub(`${P}/cam/${camId}/st`,{...S,online:true,name:camName,boot,facing},1);
+const pubSt=()=>pub(`${P}/cam/${camId}/st`,{...S,online:true,name:camName,boot,facing},1);
 async function startStream(){
   stream&&stream.getTracks().forEach(t=>t.stop());
   stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:720},frameRate:{ideal:20}},audio:false});
@@ -167,6 +172,7 @@ async function startStream(){
 function snap(w,q){const v=$('cv'),c=document.createElement('canvas');c.width=w;c.height=w*(v.videoHeight/v.videoWidth||.56);c.getContext('2d').drawImage(v,0,0,c.width,c.height);return c.toDataURL('image/jpeg',q)}
 async function onCmd(c){
   if(c.a=='watch'){peers[c.mon]&&peers[c.mon].close();const pc=new RTCPeerConnection(RTC);peers[c.mon]=pc;stream.getTracks().forEach(t=>pc.addTrack(t,stream));
+    pc.oniceconnectionstatechange=()=>{const n=Object.values(peers).filter(p=>['connected','completed'].includes(p.iceConnectionState)).length;$('clink').textContent=n?`Painel conectado (${n})`:'Painel: '+pc.iceConnectionState};
     await pc.setLocalDescription(await pc.createOffer());await ice(pc);pub(`${P}/mon/${c.mon}/sig`,{cam:camId,sdp:pc.localDescription});return}
   if(c.a=='flash'){try{await stream.getVideoTracks()[0].applyConstraints({advanced:[{torch:!!c.v}]});S.torch=!!c.v}catch{pub(`${P}/cam/${camId}/evt`,{t:'err',m:camName+': flash indisponível neste aparelho/câmera'})}}
   if(c.a=='photo')pub(`${P}/cam/${camId}/ph`,{n:camName,t:Date.now(),img:snap(800,.6)});
@@ -185,14 +191,14 @@ async function loadAI(){
     await Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(M),faceapi.nets.faceLandmark68TinyNet.loadFromUri(M),faceapi.nets.faceRecognitionNet.loadFromUri(M)]);
     S.ai=true;pubSt();$('cai').textContent='● IA facial ativa';detLoop()}catch{$('cai').textContent='Falha ao carregar IA'}
 }
-function crop(b,v){const c=document.createElement('canvas');c.width=c.height=96,m=b.width*.25;c.getContext('2d').drawImage(v,Math.max(0,b.x-m),Math.max(0,b.y-m),b.width+2*m,b.height+2*m,0,0,96,96);return c.toDataURL('image/jpeg',.75)}
+function crop(b,v){const c=document.createElement('canvas');c.width=c.height=96;const m=b.width*.25;c.getContext('2d').drawImage(v,Math.max(0,b.x-m),Math.max(0,b.y-m),b.width+2*m,b.height+2*m,0,0,96,96);return c.toDataURL('image/jpeg',.75)}
 async function detLoop(){
   try{const v=$('cv');if(v.videoWidth){
     const res=await faceapi.detectAllFaces(v,new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:.5})).withFaceLandmarks(true).withFaceDescriptors();
     const W=v.videoWidth,H=v.videoHeight,now=Date.now();
     const f=res.map(r=>{let n='Desconhecido',best=.55;for(const k of DB){const d=faceapi.euclideanDistance(r.descriptor,k.d);if(d<best){best=d;n=k.n}}const b=r.detection.box;return{n,k:n!='Desconhecido',b:[b.x/W,b.y/H,b.width/W,b.height/H]}});
     $('cdet').textContent=f.length?f.map(x=>x.n).join(' · '):'Sem rostos';
-    if(f.length||lastDet)pub(`${P}/cam/${camId}/det`,{f});lastDet=f.length;
+    if((f.length&&now-lastPubDet>800)||(!f.length&&lastDet)){lastPubDet=now;pub(`${P}/cam/${camId}/det`,{f})}lastDet=f.length;
     if(pend){if(now>pend.exp){pub(`${P}/cam/${camId}/evt`,{t:'err',m:'Nenhum rosto visível em '+camName});pend=null}
       else if(res.length){const r=res.reduce((a,b)=>b.detection.box.area>a.detection.box.area?b:a);pub(`${P}/cam/${camId}/evt`,{t:'enr',n:pend.n,d:Array.from(r.descriptor),img:crop(r.detection.box,v)});pend=null}}
     const unk=f.some(x=>!x.k);
@@ -202,18 +208,18 @@ async function detLoop(){
   }}catch(e){}
   setTimeout(detLoop,450);
 }
-let lastDet=0;
 
 /* ================= MONITOR ================= */
 const mon=rid();let cams={},pcs={},focus=null,mode=ls('mode','grid'),unread=0,curTab='cams',HIST=ls('hist',[]),FACES=ls('faces',[]);
 function initMon(){
-  show('monv');keepAwake();$('auto').checked=ls('auto',false);cl=mqtt.connect(BROKER);
+  show('monv');keepAwake();$('auto').checked=ls('auto',false);cl=mqtt.connect(BROKER,{reconnectPeriod:3000});
   cl.on('connect',()=>{cl.subscribe(['st','det','ph','al','evt'].map(k=>`${P}/cam/+/${k}`).concat(`${P}/mon/${mon}/sig`));FACES.length&&pubFaces();$('conn').classList.add('ok')});
   cl.on('close',()=>$('conn').classList.remove('ok'));
+  cl.on('error',e=>toast('Erro MQTT: '+(e.message||e)));
   cl.on('message',onMon);rHist();rFaces();setView();
 }
 const send=(id,c)=>pub(`${P}/cam/${id}/cmd`,c);
-const watch=id=>{send(id,{a:'watch',mon});setTimeout(()=>{const c=cams[id];if(c&&c.st.online&&!(pcs[id]&&pcs[id].connectionState=='connected'))watch(id)},9000)};
+const watch=id=>{send(id,{a:'watch',mon});setTimeout(()=>{const c=cams[id];if(c&&c.st.online&&!(pcs[id]&&['connected','completed'].includes(pcs[id].iceConnectionState)))watch(id)},12000)};
 async function onMon(t,m){
   let d;try{d=JSON.parse(m)}catch{return}const p=t.split('/'),id=p[2],k=p[3];
   if(p[1]=='mon')return answer(d);
@@ -225,17 +231,19 @@ async function onMon(t,m){
 }
 async function answer(d){
   const id=d.cam;pcs[id]&&pcs[id].close();const pc=new RTCPeerConnection(RTC);pcs[id]=pc;
-  pc.ontrack=e=>{const v=$('v-'+id);v.srcObject=e.streams[0];v.play().catch(()=>{})};
-  pc.onconnectionstatechange=()=>{const t=$('t-'+id);t&&t.classList.toggle('live',pc.connectionState=='connected');if(pc.connectionState=='failed')setTimeout(()=>cams[id]&&cams[id].st.online&&watch(id),2000)};
+  const setCs=s=>{const e=document.querySelector('#t-'+id+' .cs');e&&(e.textContent=s)};setCs('conectando…');
+  pc.ontrack=e=>{const v=$('v-'+id);if(!v)return;v.srcObject=e.streams[0]||new MediaStream([e.track]);v.play().catch(()=>{})};
+  pc.oniceconnectionstatechange=()=>{const s=pc.iceConnectionState;setCs(s);const t=$('t-'+id);t&&t.classList.toggle('live',s=='connected'||s=='completed');
+    if(s=='failed'){toast((cams[id]?.st?.name||'Câmera')+': conexão falhou — configure um servidor TURN');setTimeout(()=>cams[id]&&cams[id].st.online&&watch(id),2000)}};
   await pc.setRemoteDescription(d.sdp);await pc.setLocalDescription(await pc.createAnswer());await ice(pc);
   pub(`${P}/cam/${id}/sig`,{mon,sdp:pc.localDescription});
 }
 function tile(id){
   const c=cams[id];let t=$('t-'+id);
   if(!t){t=document.createElement('div');t.id='t-'+id;t.className='tile';
-    t.innerHTML=`<video id="v-${id}" autoplay playsinline muted></video><div class="ov" id="o-${id}"></div><div class="tp"><span class="lv">● AO VIVO</span><b></b></div><div class="off">Câmera offline</div>
+    t.innerHTML=`<video id="v-${id}" autoplay playsinline muted></video><div class="ov" id="o-${id}"></div><div class="tp"><span class="lv">● AO VIVO</span><b></b><span class="cs">aguardando…</span></div><div class="off">Câmera offline</div>
     <div class="bar"><button class="bf" onclick="act('${id}','flash')">${ic('flash',18)}</button><button onclick="act('${id}','photo')">${ic('cam',18)}</button><button onclick="act('${id}','flip')">${ic('flip',18)}</button><button class="ba al" onclick="act('${id}','alarm')">${ic('bell',18)}</button></div>`;
-    t.onclick=e=>{if(e.target.closest('button'))return;if(mode=='focus'&&focus==id)mode='grid';else{mode='focus';focus=id}sv('mode',mode);setView()};
+    t.onclick=e=>{if(e.target.closest('button'))return;const v=t.querySelector('video');v.play().catch(()=>{});if(mode=='focus'&&focus==id)mode='grid';else{mode='focus';focus=id}sv('mode',mode);setView()};
     const v=t.querySelector('video');v.onloadedmetadata=v.onresize=()=>{if(v.videoWidth)t.style.aspectRatio=v.videoWidth+'/'+v.videoHeight};$('grid').append(t)}
   t.querySelector('b').textContent=c.st.name||'Câmera';t.classList.toggle('offline',!c.st.online);
   t.querySelector('.bf').classList.toggle('act',!!c.st.torch);t.querySelector('.ba').classList.toggle('act',!!c.st.alarm);
